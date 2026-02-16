@@ -1389,9 +1389,10 @@ input[type=number] {
 /* Apply Input (Floating) */
 .dt-btn-apply {
     position: absolute;
-    top: -34px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: calc(100% + 12px);
+    /* Position to the right with gap */
+    transform: translateY(-50%);
     padding: 4px 12px;
     border-radius: 13px;
     background: rgba(99, 179, 237, 0.12);
@@ -1404,31 +1405,32 @@ input[type=number] {
     pointer-events: none;
     transition: all 0.2s ease;
     z-index: 10;
+    white-space: nowrap;
 }
 
 .dt-btn-apply.visible {
     opacity: 1;
     pointer-events: auto;
-    top: -34px;
+    left: calc(100% + 12px);
     /* Final position */
-    animation: slideDownFade 0.2s ease-out;
+    animation: slideRightFade 0.3s ease-out;
 }
 
-@keyframes slideDownFade {
+@keyframes slideRightFade {
     from {
         opacity: 0;
-        transform: translateX(-50%) translateY(-8px);
+        transform: translateY(-50%) translateX(-8px);
     }
 
     to {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: translateY(-50%) translateX(0);
     }
 }
 
 .dt-btn-apply:hover {
     background: rgba(99, 179, 237, 0.22);
-    transform: translateX(-50%) scale(1.06);
+    transform: translateY(-50%) scale(1.06);
 }
 
 /* Tooltip */
