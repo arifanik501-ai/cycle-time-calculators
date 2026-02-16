@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cycle Time Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="background-blobs">
         <div class="blob blob-1"></div>
@@ -37,18 +41,18 @@
                             <label for="pieces">Pieces Produced</label>
                             <input type="number" id="pieces" placeholder="e.g., 25" min="1">
                         </div>
-                        <div class="time-inputs">
-                            <div class="input-field">
-                                <label for="time-min">Minutes</label>
-                                <input type="number" id="time-min" placeholder="10" min="0">
-                            </div>
-                            <div class="input-field">
-                                <label for="time-sec">Seconds</label>
-                                <input type="number" id="time-sec" placeholder="30" min="0" max="59">
+                        <div class="input-field time-group">
+                            <label>Time Taken (Min : Sec)</label>
+                            <div class="time-inputs-row">
+                                <input type="number" id="time-min" placeholder="00" min="0">
+                                <span class="time-separator">:</span>
+                                <input type="number" id="time-sec" placeholder="00" min="0" max="59">
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="divider"></div>
 
                 <!-- Input Group 2: Downtime Data -->
                 <div class="input-group">
@@ -58,14 +62,12 @@
                     </div>
                     <p class="section-desc">Define downtime pattern (Duration per Frequency)</p>
                     <div class="input-grid">
-                         <div class="time-inputs">
-                            <div class="input-field">
-                                <label for="downtime-min">Event Duration (Min)</label>
-                                <input type="number" id="downtime-min" placeholder="5" min="0">
-                            </div>
-                            <div class="input-field">
-                                <label for="downtime-sec">Event Duration (Sec)</label>
-                                <input type="number" id="downtime-sec" placeholder="0" min="0" max="59">
+                        <div class="input-field time-group">
+                            <label>Event Duration (Min : Sec)</label>
+                            <div class="time-inputs-row">
+                                <input type="number" id="downtime-min" placeholder="00" min="0">
+                                <span class="time-separator">:</span>
+                                <input type="number" id="downtime-sec" placeholder="00" min="0" max="59">
                             </div>
                         </div>
                         <div class="input-field">
@@ -110,12 +112,12 @@
                     <h3>11-Hour Shift Output</h3>
                     <div class="result-value" id="res-11hr-output">----</div>
                     <div class="result-unit">pieces</div>
-                     <div class="efficiency-bar-container">
+                    <div class="efficiency-bar-container">
                         <div class="efficiency-bar" id="bar-11hr" style="width: 0%"></div>
                     </div>
                 </div>
-                
-                 <!-- Bonus Metrics -->
+
+                <!-- Bonus Metrics -->
                 <div class="bonus-metrics">
                     <div class="metric-item">
                         <span class="metric-label">Efficiency</span>
@@ -125,7 +127,7 @@
                         <span class="metric-label">Rate (pcs/hr)</span>
                         <span class="metric-val" id="res-rate-hr">--</span>
                     </div>
-                 </div>
+                </div>
 
             </div>
         </main>
@@ -133,4 +135,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
