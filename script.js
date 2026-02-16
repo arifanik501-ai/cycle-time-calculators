@@ -186,25 +186,69 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         useTime() {
-            // Convert measurement to inputs
+            // 1. Get current time values
             const mm = parseInt(this.elements.displayMin.textContent);
             const ss = parseInt(this.elements.displaySec.textContent);
+            
+            // 2. Create Flying Element
+            const timeText = `${this.elements.displayMin.textContent}:${this.elements.displaySec.textContent}`;
+            const flyer = document.createElement('div');
+            flyer.textContent = timeText;
+            flyer.classList.add('flying-value');
+            // Make it slightly larger for the main stopwatch
+            flyer.style.fontSize = '2rem'; 
+            document.body.appendChild(flyer);
 
-            // Populate Calculator Inputs
-            document.getElementById('time-min').value = mm;
-            document.getElementById('time-sec').value = ss;
+            // 3. Position flyer at current time display (Center of digital time)
+            const sourceRect = document.querySelector('.digital-time').getBoundingClientRect();
+            flyer.style.top = `${sourceRect.top}px`;
+            flyer.style.left = `${sourceRect.left + (sourceRect.width / 2) - 40}px`; // Center align roughly
 
-            // Scroll to inputs
-            document.querySelector('.input-section').scrollIntoView({ behavior: 'smooth' });
+            // 4. Calculate Target (Inputs)
+            // We target the separator of the time inputs
+            const targetRow = document.querySelector('.time-inputs-row');
+            // Ensure target is visible or at least we know where it is relative to viewport
+            // If it's far down, top will be large positive
+            const targetRect = targetRow.getBoundingClientRect();
 
-            // Highlight inputs
-            const row = document.querySelector('.time-inputs-row');
-            row.style.borderColor = '#63B3ED';
-            row.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.4)';
+            // 5. Animate Flight
+            requestAnimationFrame(() => {
+                // Calculate delta
+                const deltaX = targetRect.left + (targetRect.width / 2) - sourceRect.left - (sourceRect.width/2) + 40; // Adjust for centering
+                const deltaY = targetRect.top - sourceRect.top;
+
+                flyer.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.4)`; // Scale down to match input size
+                flyer.style.opacity = '0';
+            });
+
+            // 6. Scroll to inputs (after short delay to separate visual actions slightly)
             setTimeout(() => {
-                row.style.borderColor = '';
-                row.style.boxShadow = '';
-            }, 1000);
+                 document.querySelector('.input-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+
+            // 7. On Arrival (500ms matches CSS transition)
+            setTimeout(() => {
+                // Populate Calculator Inputs
+                document.getElementById('time-min').value = mm;
+                document.getElementById('time-sec').value = ss;
+
+                // Remove Flyer
+                flyer.remove();
+
+                // Highlight inputs
+                const row = document.querySelector('.time-inputs-row');
+                row.style.borderColor = '#63B3ED';
+                row.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.4)';
+                
+                // Visual feedback checkmark inside the input temporarily? 
+                // Or just flash the border (already doing that).
+                
+                setTimeout(() => {
+                    row.style.borderColor = '';
+                    row.style.boxShadow = '';
+                }, 1000);
+
+            }, 500);
         }
     };
 
