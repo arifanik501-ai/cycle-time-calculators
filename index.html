@@ -16,6 +16,71 @@
 </head>
 
 <body>
+    <!-- Live Analog Clock -->
+    <div class="live-clock" id="live-clock" role="img" aria-label="Live clock showing current time" tabindex="0"
+        aria-haspopup="true" aria-expanded="false">
+        <div class="clock-face">
+            <svg viewBox="0 0 64 64" class="clock-svg">
+                <!-- Markers Group -->
+                <g class="markers">
+                    <!-- Major Markers (Lines) -->
+                    <line x1="32" y1="4" x2="32" y2="10" class="marker major top" />
+                    <line x1="60" y1="32" x2="54" y2="32" class="marker major right" />
+                    <line x1="32" y1="60" x2="32" y2="54" class="marker major bottom" />
+                    <line x1="4" y1="32" x2="10" y2="32" class="marker major left" />
+
+                    <!-- Minor Markers (Dots) - Dynamically generated or hardcoded? Hardcoding for simplicity/perf -->
+                    <!-- 1 -->
+                    <circle cx="46" cy="7.7" r="1" class="marker minor" />
+                    <!-- 2 -->
+                    <circle cx="56.3" cy="18" r="1" class="marker minor" />
+                    <!-- 4 -->
+                    <circle cx="56.3" cy="46" r="1" class="marker minor" />
+                    <!-- 5 -->
+                    <circle cx="46" cy="56.3" r="1" class="marker minor" />
+                    <!-- 7 -->
+                    <circle cx="18" cy="56.3" r="1" class="marker minor" />
+                    <!-- 8 -->
+                    <circle cx="7.7" cy="46" r="1" class="marker minor" />
+                    <!-- 10 -->
+                    <circle cx="7.7" cy="18" r="1" class="marker minor" />
+                    <!-- 11 -->
+                    <circle cx="18" cy="7.7" r="1" class="marker minor" />
+                </g>
+
+                <!-- Hands -->
+                <line x1="32" y1="32" x2="32" y2="18" class="hand hour-hand" id="clock-hand-hour" />
+                <line x1="32" y1="32" x2="32" y2="12" class="hand minute-hand" id="clock-hand-minute" />
+                <g class="second-hand-group" id="clock-hand-second">
+                    <line x1="32" y1="36" x2="32" y2="10" class="hand second-hand" />
+                    <circle cx="32" cy="10" r="1" class="second-tip" /> <!-- Tip dot -->
+                </g>
+
+                <!-- Center Dot -->
+                <circle cx="32" cy="32" r="2" class="center-dot" />
+            </svg>
+        </div>
+
+        <!-- Digital Time (Below) -->
+        <div class="digital-clock-text" id="digital-clock-text">--:-- --</div>
+
+        <!-- Expanded Panel -->
+        <div class="expanded-panel hidden" id="clock-panel">
+            <div class="panel-row day-row">
+                <i class="fa-regular fa-calendar"></i> <span id="panel-day">--</span>
+            </div>
+            <div class="panel-row time-row" id="panel-time">--:--:-- --</div>
+            <div class="panel-row date-row" id="panel-date">--</div>
+            <div class="panel-divider"></div>
+            <div class="panel-row shift-row">
+                <i class="fa-solid fa-industry"></i> <span id="panel-shift">--</span>
+            </div>
+            <div class="panel-row remaining-row">
+                <i class="fa-solid fa-hourglass-half"></i> <span id="panel-remaining">--</span>
+            </div>
+        </div>
+    </div>
+
     <div class="background-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
