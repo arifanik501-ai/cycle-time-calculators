@@ -211,6 +211,177 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Stopwatch
     stopwatch.init();
 
+    // --- DOWNTIME MINI STOPWATCH LOGIC ---
+    const downtimeStopwatch = {
+        startTime: 0,
+        elapsedTime: 0,
+        timerInterval: null,
+        isRunning: false,
+
+        elements: {
+            container: document.getElementById('dt-stopwatch'),
+            timeDisplay: document.querySelector('.dt-time'),
+            btnToggle: document.querySelector('.dt-btn-toggle'),
+            btnReset: document.querySelector('.dt-btn-reset'),
+            progressBar: document.querySelector('.dt-progress-bar'),
+            btnApply: document.querySelector('.dt-btn-apply'),
+            icon: document.querySelector('.dt-icon'),
+            inputs: {
+                min: document.getElementById('downtime-min'),
+                sec: document.getElementById('downtime-sec')
+            }
+        },
+
+        init() {
+            this.setupEventListeners();
+        },
+
+        setupEventListeners() {
+            this.elements.btnToggle.addEventListener('click', () => this.toggle());
+            this.elements.btnReset.addEventListener('click', () => this.reset());
+            this.elements.btnApply.addEventListener('click', () => this.applyTime());
+        },
+
+        toggle() {
+            if (this.isRunning) {
+                this.pause();
+            } else {
+                this.start();
+            }
+        },
+
+        start() {
+            if (!this.isRunning) {
+                this.startTime = performance.now() - this.elapsedTime;
+                this.timerInterval = requestAnimationFrame(this.update.bind(this));
+                this.isRunning = true;
+
+                // UI Updates
+                this.elements.container.classList.add('running');
+                this.elements.container.classList.remove('paused');
+                this.elements.btnToggle.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                this.elements.btnToggle.setAttribute('aria-label', 'Pause Downtime Timer');
+                this.elements.btnReset.disabled = false;
+                this.elements.btnApply.classList.remove('visible'); // Hide apply when running
+            }
+        },
+
+        pause() {
+            if (this.isRunning) {
+                cancelAnimationFrame(this.timerInterval);
+                this.isRunning = false;
+
+                // UI Updates
+                this.elements.container.classList.remove('running');
+                this.elements.container.classList.add('paused');
+                this.elements.btnToggle.innerHTML = '<i class="fa-solid fa-play"></i>';
+                this.elements.btnToggle.setAttribute('aria-label', 'Resume Downtime Timer');
+
+                // Show Apply if time > 0
+                if (this.elapsedTime > 0) {
+                    this.elements.btnApply.classList.add('visible');
+                }
+            }
+        },
+
+        reset() {
+            this.pause();
+            this.elapsedTime = 0;
+            this.updateDisplay(0);
+
+            // UI Updates
+            this.elements.container.classList.remove('running', 'paused');
+            this.elements.btnReset.disabled = true;
+            this.elements.btnApply.classList.remove('visible');
+            this.elements.progressBar.style.width = '0%';
+
+            // Icon Reset
+            this.elements.icon.style.animation = 'none';
+        },
+
+        update(currentTime) {
+            this.elapsedTime = currentTime - this.startTime;
+            this.updateDisplay(this.elapsedTime);
+
+            if (this.isRunning) {
+                this.timerInterval = requestAnimationFrame(this.update.bind(this));
+            }
+        },
+
+        updateDisplay(time) {
+            const totalSeconds = Math.floor(time / 1000);
+            const mm = Math.floor(totalSeconds / 60);
+            const ss = totalSeconds % 60;
+
+            const formattedMM = mm.toString().padStart(2, '0');
+            const formattedSS = ss.toString().padStart(2, '0');
+
+            this.elements.timeDisplay.textContent = `${formattedMM}:${formattedSS}`;
+
+            // Progress bar (fills every 60s)
+            const progress = (this.elapsedTime % 60000) / 60000 * 100;
+            this.elements.progressBar.style.width = `${progress}%`;
+        },
+
+        applyTime() {
+            const timeText = this.elements.timeDisplay.textContent;
+            const [mm, ss] = timeText.split(':').map(val => parseInt(val));
+
+            // 1. Create Flying Element
+            const flyer = document.createElement('div');
+            flyer.textContent = timeText;
+            flyer.classList.add('flying-value');
+            document.body.appendChild(flyer);
+
+            // Position flyer at current time display
+            const rect = this.elements.timeDisplay.getBoundingClientRect();
+            flyer.style.top = `${rect.top}px`;
+            flyer.style.left = `${rect.left}px`;
+
+            // 2. Animate Flight to Inputs
+            // Target: Center of downtime inputs
+            const targetMin = this.elements.inputs.min.getBoundingClientRect();
+            const targetSec = this.elements.inputs.sec.getBoundingClientRect();
+
+            // Simplified flight: fly to the separator
+            const separator = document.querySelector('#downtime-inputs-row .time-separator').getBoundingClientRect();
+
+            requestAnimationFrame(() => {
+                flyer.style.transform = `translate(${separator.left - rect.left}px, ${separator.top - rect.top}px) scale(0.5)`;
+                flyer.style.opacity = '0';
+            });
+
+            // 3. On Arrival (500ms)
+            setTimeout(() => {
+                // Populate Inputs
+                this.elements.inputs.min.value = mm;
+                this.elements.inputs.sec.value = ss;
+
+                // Remove Flyer
+                flyer.remove();
+
+                // Highlight Inputs
+                const row = document.getElementById('downtime-inputs-row');
+                row.style.borderColor = '#63B3ED';
+                row.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.4)';
+
+                // Show Checkmark in Stopwatch
+                const originalTime = this.elements.timeDisplay.textContent;
+                this.elements.timeDisplay.innerHTML = '<span style="color: #48BB78"><i class="fa-solid fa-check"></i></span>';
+
+                setTimeout(() => {
+                    row.style.borderColor = '';
+                    row.style.boxShadow = '';
+                    this.reset(); // Auto reset after apply
+                    this.elements.timeDisplay.textContent = '00:00';
+                }, 1000);
+
+            }, 500);
+        }
+    };
+
+    downtimeStopwatch.init();
+
     // --- EXISTING CALCULATOR LOGIC ---
     // DOM Elements
     const piecesInput = document.getElementById('pieces');
@@ -242,9 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resRateHr = document.getElementById('res-rate-hr');
 
     const resEfficiency = document.getElementById('res-efficiency');
-
-    const resDowntimeLoss = document.getElementById('res-downtime-loss');
-    const resDowntimePieces = document.getElementById('res-downtime-pieces');
 
     // Constants
     const SHIFT_8_SEC = 28800; // 8 hours * 3600
@@ -281,26 +449,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalObservedSeconds = (timeMin * 60) + timeSec;
         const rawCycleTime = totalObservedSeconds / pieces;
 
-        // 2. Calculate Effective Cycle Time (including downtime)
-        const downMin = parseInt(downtimeMinInput.value) || 0;
-        const downSec = parseInt(downtimeSecInput.value) || 0;
-        const downFreq = parseInt(downtimeFreqInput.value) || 0;
-
-        let downtimePerPiece = 0;
-
-        if (downFreq > 0 && (downMin > 0 || downSec > 0)) {
-            const totalDowntimeEventSeconds = (downMin * 60) + downSec;
-            downtimePerPiece = totalDowntimeEventSeconds / downFreq;
-        }
-
-        const effectiveCycleTime = rawCycleTime + downtimePerPiece;
+        // 2. Effective Cycle Time is just raw cycle time without downtime
+        const effectiveCycleTime = rawCycleTime;
 
         // 3. Projections
         const output8hr = Math.floor(SHIFT_8_SEC / effectiveCycleTime);
         const output11hr = Math.floor(SHIFT_11_SEC / effectiveCycleTime);
 
-        // Targets (Theoretical Max with 0 Downtime)
-        // Avoid division by zero if rawCycleTime is extremely small (unlikely with validation)
+        // Targets (Theoretical Max - now same as actual output)
         const safeRawCycle = rawCycleTime > 0 ? rawCycleTime : 1;
         const targetOutput8hr = Math.floor(SHIFT_8_SEC / safeRawCycle);
         const targetOutput11hr = Math.floor(SHIFT_11_SEC / safeRawCycle);
@@ -339,20 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
             efficiency = (rawCycleTime / effectiveCycleTime) * 100;
         }
         animateValue(resEfficiency, 0, efficiency, 1000, 2);
-
-        // Downtime Impact
-        // Calculate total minutes lost in an 8hr shift for context
-        // Production Time = Output * rawCycle
-        // Downtime = Total Time - Production Time
-        const productionTime8hr = output8hr * rawCycleTime;
-        const downtimeSeconds8hr = SHIFT_8_SEC - productionTime8hr;
-        // Ensure non-negative
-        const downtimeMinutes = Math.max(0, Math.round(downtimeSeconds8hr / 60));
-        const piecesLost = Math.max(0, targetOutput8hr - output8hr);
-
-        animateValue(resDowntimeLoss, 0, downtimeMinutes, 1000, 0); // Minutes lost
-        resDowntimePieces.textContent = piecesLost.toLocaleString();
-
 
         // Scroll to results on mobile
         if (window.innerWidth < 600) {

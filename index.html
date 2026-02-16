@@ -148,10 +148,33 @@
                 <div class="input-grid">
                     <div class="input-field time-group">
                         <label>Event Duration (Min : Sec)</label>
-                        <div class="time-inputs-row">
-                            <input type="number" id="downtime-min" placeholder="00" min="0">
-                            <span class="time-separator">:</span>
-                            <input type="number" id="downtime-sec" placeholder="00" min="0" max="59">
+                        <div class="downtime-wrapper">
+                            <div class="time-inputs-row" id="downtime-inputs-row">
+                                <input type="number" id="downtime-min" placeholder="00" min="0">
+                                <span class="time-separator">:</span>
+                                <input type="number" id="downtime-sec" placeholder="00" min="0" max="59">
+                            </div>
+
+                            <!-- Downtime Mini Stopwatch -->
+                            <div class="downtime-stopwatch" id="dt-stopwatch" role="timer"
+                                aria-label="Downtime Stopwatch" aria-live="off">
+                                <i class="fa-solid fa-stopwatch dt-icon"></i>
+                                <span class="dt-time">00:00</span>
+                                <div class="dt-divider"></div>
+                                <button class="dt-btn dt-btn-toggle" aria-label="Start Downtime Timer">
+                                    <i class="fa-solid fa-play"></i>
+                                </button>
+                                <button class="dt-btn dt-btn-reset" disabled aria-label="Reset Timer">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                </button>
+                                <div class="dt-progress-bar"></div>
+
+                                <!-- Apply Button (Floating) -->
+                                <button class="dt-btn-apply hidden">APPLY &darr;</button>
+
+                                <!-- Tooltip -->
+                                <div class="dt-tooltip">Measure downtime & apply to inputs</div>
+                            </div>
                         </div>
                     </div>
                     <div class="input-field">
@@ -270,24 +293,7 @@
                 </div>
             </div>
 
-            <!-- Card 6: Downtime Impact -->
-            <div class="output-card card-downtime">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-hourglass-half"></i>
-                    </div>
-                    <h3>Shift Downtime</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-downtime-loss">--</span>
-                        <span class="unit-label">min</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info">Loss: <span id="res-downtime-pieces">--</span> pcs</div>
-                </div>
-            </div>
+
         </div>
         </main>
     </div>

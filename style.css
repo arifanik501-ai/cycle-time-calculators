@@ -1198,3 +1198,314 @@ input[type=number] {
 .mini-btn:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
+/* =========================================
+   DOWNTIME MINI STOPWATCH STYLES
+   ========================================= */
+
+.downtime-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.downtime-stopwatch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 6px 0 14px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 22px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    width: fit-content;
+    min-width: 150px;
+    overflow: visible;
+    /* Changed to visible for tooltip/apply button */
+}
+
+/* Hover Effect */
+.downtime-stopwatch:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Active/Running State Border */
+.downtime-stopwatch.running {
+    border-color: rgba(252, 129, 129, 0.25);
+    animation: borderGlow 3s infinite;
+}
+
+.downtime-stopwatch.paused {
+    border-color: rgba(236, 201, 75, 0.18);
+}
+
+@keyframes borderGlow {
+    0% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 rgba(252, 129, 129, 0);
+    }
+
+    50% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 8px rgba(252, 129, 129, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 rgba(252, 129, 129, 0);
+    }
+}
+
+/* Icon */
+.dt-icon {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-right: 6px;
+    transition: all 0.3s ease;
+}
+
+.downtime-stopwatch.running .dt-icon {
+    color: rgba(252, 129, 129, 0.7);
+    animation: iconPulse 2s infinite ease-in-out;
+}
+
+.downtime-stopwatch.paused .dt-icon {
+    color: rgba(236, 201, 75, 0.55);
+}
+
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Time Display */
+.dt-time {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    margin-right: 8px;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+}
+
+.downtime-stopwatch.running .dt-time {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.downtime-stopwatch.paused .dt-time {
+    color: rgba(255, 255, 255, 0.7);
+    animation: blinkColon 0.8s infinite;
+}
+
+@keyframes blinkColon {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Vertical Divider */
+.dt-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0 8px;
+}
+
+/* Buttons */
+.dt-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    transition: all 0.2s ease;
+}
+
+.dt-btn i {
+    font-size: 10px;
+}
+
+/* Start/Pause Specifics */
+.dt-btn-toggle {
+    background: rgba(72, 187, 120, 0.15);
+    border-color: rgba(72, 187, 120, 0.25);
+    color: #48BB78;
+}
+
+.downtime-stopwatch.running .dt-btn-toggle {
+    background: rgba(236, 201, 75, 0.15);
+    border-color: rgba(236, 201, 75, 0.25);
+    color: #ECC94B;
+}
+
+.dt-btn:hover {
+    transform: scale(1.12);
+}
+
+.dt-btn:active {
+    transform: scale(0.95);
+}
+
+.dt-btn-reset:disabled {
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* Progress Bar */
+.dt-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #FC8181, #F56565);
+    width: 0%;
+    transition: width 1s linear;
+    border-radius: 0 0 22px 22px;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Apply Input (Floating) */
+.dt-btn-apply {
+    position: absolute;
+    top: -34px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 12px;
+    border-radius: 13px;
+    background: rgba(99, 179, 237, 0.12);
+    border: 1px solid rgba(99, 179, 237, 0.25);
+    color: #63B3ED;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.dt-btn-apply.visible {
+    opacity: 1;
+    pointer-events: auto;
+    top: -34px;
+    /* Final position */
+    animation: slideDownFade 0.2s ease-out;
+}
+
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.dt-btn-apply:hover {
+    background: rgba(99, 179, 237, 0.22);
+    transform: translateX(-50%) scale(1.06);
+}
+
+/* Tooltip */
+.dt-tooltip {
+    position: absolute;
+    top: -46px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    width: max-content;
+    max-width: 200px;
+    text-align: center;
+    z-index: 20;
+    white-space: nowrap;
+}
+
+.downtime-stopwatch:hover .dt-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Flight Animation Cloning Style */
+.flying-value {
+    position: fixed;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: #63B3ED;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+    text-shadow: 0 0 5px rgba(99, 179, 237, 0.5);
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .downtime-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .time-inputs-row {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .downtime-stopwatch {
+        width: 100%;
+        margin-top: 4px;
+        height: 48px;
+        justify-content: space-between;
+    }
+
+    .dt-time {
+        margin-right: auto;
+        /* Push time to left */
+    }
+
+    .dt-btn-apply {
+        top: -40px;
+        /* Adjust for mobile spacing */
+    }
+
+    .dt-tooltip {
+        display: none;
+        /* Hide tooltip on mobile */
+    }
+}
