@@ -175,46 +175,70 @@ body {
 }
 
 .input-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 10px;
 }
 
 .time-inputs {
     display: flex;
     flex-direction: row;
     gap: 15px;
-    width: 100%;
+    justify-content: center;
+    align-items: flex-end;
+    /* Align inputs to bottom */
 }
 
+/* Specific adjustment for Time Inputs container to match visually */
 .time-inputs .input-field {
-    flex: 1;
-    min-width: 0;
-    /* Allows shrinking below content size */
+    width: auto;
+    /* Let them shrink to fit content */
+    align-items: center;
+    /* Center label and input */
+    flex: 0 0 auto;
 }
 
 .input-field {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: auto;
+    /* Changed from 100% to auto for centering */
+    align-items: center;
+    /* Center labels and inputs */
+    min-width: 80px;
+    /* Minimum width for touch targets */
 }
 
 .input-field label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 8px;
     font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    /* Prevent label wrapping awkwardly */
 }
 
 .input-field input {
     background: var(--input-bg);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    padding: 14px 18px;
+    padding: 10px 0;
+    /* Remove horizontal padding, rely on width */
     color: white;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    /* Slightly larger text for numbers */
     outline: none;
     transition: all 0.3s ease;
+    width: 70px;
+    /* Slight bump from 60px for breathing room */
+    height: 50px;
+    /* Fixed height for consistency */
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Inner shadow for depth */
 }
 
 /* Remove default number spinners */
@@ -232,11 +256,14 @@ body {
 .input-field input:focus {
     border-color: var(--accent-blue);
     background: var(--input-focus);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    transform: translateY(-2px);
+    /* Subtle lift on focus */
 }
 
 .input-field input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
 }
 
 /* Buttons */
