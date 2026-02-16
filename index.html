@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle Time Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="app-header">
+            <h1><i class="fa-solid fa-industry"></i> Cycle Time Calculator</h1>
+            <p>Production & Efficiency Forecaster</p>
+        </header>
+
+        <main class="glass-panel main-content">
+            <div class="input-section">
+                <!-- Input Group 1: Production Data -->
+                <div class="input-group">
+                    <div class="group-header">
+                        <i class="fa-solid fa-box-open"></i>
+                        <h2>Production Output</h2>
+                    </div>
+                    <div class="input-grid">
+                        <div class="input-field">
+                            <label for="pieces">Pieces Produced</label>
+                            <input type="number" id="pieces" placeholder="e.g., 25" min="1">
+                        </div>
+                        <div class="time-inputs">
+                            <div class="input-field">
+                                <label for="time-min">Minutes</label>
+                                <input type="number" id="time-min" placeholder="10" min="0">
+                            </div>
+                            <div class="input-field">
+                                <label for="time-sec">Seconds</label>
+                                <input type="number" id="time-sec" placeholder="30" min="0" max="59">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Group 2: Downtime Data -->
+                <div class="input-group">
+                    <div class="group-header">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h2>Downtime / Losses</h2>
+                    </div>
+                    <p class="section-desc">Define downtime pattern (Duration per Frequency)</p>
+                    <div class="input-grid">
+                         <div class="time-inputs">
+                            <div class="input-field">
+                                <label for="downtime-min">Event Duration (Min)</label>
+                                <input type="number" id="downtime-min" placeholder="5" min="0">
+                            </div>
+                            <div class="input-field">
+                                <label for="downtime-sec">Event Duration (Sec)</label>
+                                <input type="number" id="downtime-sec" placeholder="0" min="0" max="59">
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <label for="downtime-freq">Occurs every ___ pieces</label>
+                            <input type="number" id="downtime-freq" placeholder="100" min="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="calculate-btn" class="btn btn-primary">
+                        <i class="fa-solid fa-calculator"></i> Calculate Output
+                    </button>
+                    <button id="reset-btn" class="btn btn-secondary">
+                        <i class="fa-solid fa-rotate-right"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section hidden" id="results-area">
+                <div class="output-card card-cycle">
+                    <div class="card-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                    <h3>Cycle Time Per Piece</h3>
+                    <div class="result-value" id="res-cycle-time">--.--</div>
+                    <div class="result-unit">seconds/piece</div>
+                    <div class="result-sub" id="res-cycle-time-formatted">--:--.--</div>
+                </div>
+
+                <div class="output-card card-8hr">
+                    <div class="card-icon"><i class="fa-regular fa-clock"></i> <span>8h</span></div>
+                    <h3>8-Hour Shift Output</h3>
+                    <div class="result-value" id="res-8hr-output">----</div>
+                    <div class="result-unit">pieces</div>
+                    <div class="efficiency-bar-container">
+                        <div class="efficiency-bar" id="bar-8hr" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="output-card card-11hr">
+                    <div class="card-icon"><i class="fa-regular fa-clock"></i> <span>11h</span></div>
+                    <h3>11-Hour Shift Output</h3>
+                    <div class="result-value" id="res-11hr-output">----</div>
+                    <div class="result-unit">pieces</div>
+                     <div class="efficiency-bar-container">
+                        <div class="efficiency-bar" id="bar-11hr" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                 <!-- Bonus Metrics -->
+                <div class="bonus-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">Efficiency</span>
+                        <span class="metric-val" id="res-efficiency">--%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Rate (pcs/hr)</span>
+                        <span class="metric-val" id="res-rate-hr">--</span>
+                    </div>
+                 </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
