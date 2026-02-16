@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             secondaryTime: document.getElementById('secondary-time'),
             secondHand: document.getElementById('second-hand'),
             progressRing: document.querySelector('.progress-ring-stroke'),
-            lapCounter: document.getElementById('lap-count-val'),
+            // lapCounter removed
             btnStart: document.getElementById('btn-start'),
             btnReset: document.getElementById('btn-reset'),
             btnLap: document.getElementById('btn-lap'),
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elapsedTime = 0;
             this.updateDisplay(0);
             this.laps = 0;
-            this.elements.lapCounter.textContent = '#00';
+            // this.elements.lapCounter.textContent = '#00'; // Removed
             this.elements.btnReset.disabled = true;
             this.elements.btnLap.disabled = true;
             this.elements.btnUseTime.classList.add('hidden');
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         lap() {
             this.laps++;
-            this.elements.lapCounter.textContent = `#${this.laps.toString().padStart(2, '0')}`;
+            // this.elements.lapCounter.textContent = `#${this.laps.toString().padStart(2, '0')}`; // Removed
             // Could add lap recording logic here
         },
 
@@ -189,14 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Get current time values
             const mm = parseInt(this.elements.displayMin.textContent);
             const ss = parseInt(this.elements.displaySec.textContent);
-            
+
             // 2. Create Flying Element
             const timeText = `${this.elements.displayMin.textContent}:${this.elements.displaySec.textContent}`;
             const flyer = document.createElement('div');
             flyer.textContent = timeText;
             flyer.classList.add('flying-value');
             // Make it slightly larger for the main stopwatch
-            flyer.style.fontSize = '2rem'; 
+            flyer.style.fontSize = '2rem';
             document.body.appendChild(flyer);
 
             // 3. Position flyer at current time display (Center of digital time)
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 5. Animate Flight
             requestAnimationFrame(() => {
                 // Calculate delta
-                const deltaX = targetRect.left + (targetRect.width / 2) - sourceRect.left - (sourceRect.width/2) + 40; // Adjust for centering
+                const deltaX = targetRect.left + (targetRect.width / 2) - sourceRect.left - (sourceRect.width / 2) + 40; // Adjust for centering
                 const deltaY = targetRect.top - sourceRect.top;
 
                 flyer.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.4)`; // Scale down to match input size
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 6. Scroll to inputs (after short delay to separate visual actions slightly)
             setTimeout(() => {
-                 document.querySelector('.input-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.querySelector('.input-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 300);
 
             // 7. On Arrival (500ms matches CSS transition)
@@ -239,10 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const row = document.querySelector('.time-inputs-row');
                 row.style.borderColor = '#63B3ED';
                 row.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.4)';
-                
+
                 // Visual feedback checkmark inside the input temporarily? 
                 // Or just flash the border (already doing that).
-                
+
                 setTimeout(() => {
                     row.style.borderColor = '';
                     row.style.boxShadow = '';
@@ -493,14 +493,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalObservedSeconds = (timeMin * 60) + timeSec;
         const rawCycleTime = totalObservedSeconds / pieces;
 
-        // 2. Effective Cycle Time is just raw cycle time without downtime
-        const effectiveCycleTime = rawCycleTime;
+        // 2. Calculate Downtime Impact
+        const dtMin = parseInt(downtimeMinInput.value) || 0;
+        const dtSec = parseInt(downtimeSecInput.value) || 0;
+        const dtFreq = parseInt(downtimeFreqInput.value) || 0;
 
-        // 3. Projections
+        let downtimeImpactPerPiece = 0;
+        if (dtFreq > 0 && (dtMin > 0 || dtSec > 0)) {
+            const totalDowntimeSeconds = (dtMin * 60) + dtSec;
+            downtimeImpactPerPiece = totalDowntimeSeconds / dtFreq;
+        }
+
+        // 3. Effective Cycle Time
+        const effectiveCycleTime = rawCycleTime + downtimeImpactPerPiece;
+
+        // 4. Projections
+        // Actual output based on effective cycle time (with downtime)
         const output8hr = Math.floor(SHIFT_8_SEC / effectiveCycleTime);
         const output11hr = Math.floor(SHIFT_11_SEC / effectiveCycleTime);
 
-        // Targets (Theoretical Max - now same as actual output)
+        // Targets (Theoretical Max - based on RAW cycle time without downtime)
+        // This shows what COULD be achieved if there were no downtime
         const safeRawCycle = rawCycleTime > 0 ? rawCycleTime : 1;
         const targetOutput8hr = Math.floor(SHIFT_8_SEC / safeRawCycle);
         const targetOutput11hr = Math.floor(SHIFT_11_SEC / safeRawCycle);
@@ -533,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resRateHr.textContent = Math.round(ratePerHr).toLocaleString();
 
         // Efficiency (OEE Estimate: Actual / Theoretical)
-        // Efficiency = (Raw Cycle Time / Effective Cycle Time) * 100
+        // Efficiency = (Theoretical Max Output / Actual Output) * 100 OR (Raw Cycle / Effective Cycle) * 100
         let efficiency = 0;
         if (effectiveCycleTime > 0) {
             efficiency = (rawCycleTime / effectiveCycleTime) * 100;

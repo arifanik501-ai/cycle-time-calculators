@@ -1,31 +1,67 @@
 :root {
-    /* Premium Emerald Theme - Reverted */
+    /* Base Theme (Emerald - Default) */
     --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #0f766e 100%);
+    --primary-color: #10b981;
+    --primary-hover: #059669;
+    --primary-glow: rgba(16, 185, 129, 0.3);
+    --input-focus-border: #34d399;
+    --blob-color-1: #065f46;
+    --blob-color-2: #115e59;
+
+    /* Common */
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
-
     --text-primary: #ecfdf5;
     --text-secondary: #a7f3d0;
     --text-muted: #6ee7b7;
-
-    /* Functional Colors */
-    --primary-color: #10b981;
-    /* Emerald 500 */
-    --primary-hover: #059669;
-    /* Emerald 600 */
-    --primary-glow: rgba(16, 185, 129, 0.3);
-
     --input-bg: rgba(0, 0, 0, 0.2);
     --input-border: rgba(255, 255, 255, 0.08);
-    --input-focus-border: #34d399;
 
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
     --radius-lg: 20px;
     --radius-md: 12px;
     --radius-sm: 8px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+}
+
+/* Ocean Theme */
+[data-theme="ocean"] {
+    --bg-gradient: linear-gradient(135deg, #1A365D 0%, #2B6CB0 50%, #4299E1 100%);
+    --primary-color: #63B3ED;
+    --primary-hover: #3182CE;
+    --primary-glow: rgba(99, 179, 237, 0.3);
+    --input-focus-border: #90CDF4;
+    --blob-color-1: #2C5282;
+    --blob-color-2: #2B6CB0;
+    --text-primary: #ebf8ff;
+    --text-secondary: #bee3f8;
+    --text-muted: #90cdf4;
+}
+
+/* Midnight Theme */
+[data-theme="midnight"] {
+    --bg-gradient: linear-gradient(135deg, #2D3748 0%, #44337A 50%, #805AD5 100%);
+    --primary-color: #9F7AEA;
+    --primary-hover: #805AD5;
+    --primary-glow: rgba(159, 122, 234, 0.3);
+    --input-focus-border: #D6BCFA;
+    --blob-color-1: #553C9A;
+    --blob-color-2: #6B46C1;
+    --text-primary: #faf5ff;
+    --text-secondary: #e9d8fd;
+    --text-muted: #d6bcfa;
 }
 
 * {
