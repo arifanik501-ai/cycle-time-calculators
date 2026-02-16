@@ -30,11 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Please enter a valid number of pieces produced (greater than 0).");
             return false;
         }
-        
+
         // Check if at least some time is entered
         const min = parseInt(timeMinInput.value) || 0;
         const sec = parseInt(timeSecInput.value) || 0;
-        
+
         if (min === 0 && sec === 0) {
             alert("Please enter the time taken (Minutes or Seconds).");
             return false;
@@ -44,13 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculate() {
+        playClickSound(); // Play sound on click
         if (!validateInputs()) return;
 
         // 1. Calculate Raw Cycle Time
         const pieces = parseInt(piecesInput.value);
         const timeMin = parseInt(timeMinInput.value) || 0;
         const timeSec = parseInt(timeSecInput.value) || 0;
-        
+
         const totalObservedSeconds = (timeMin * 60) + timeSec;
         const rawCycleTime = totalObservedSeconds / pieces;
 
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Logic: Effective Cycle Time = Raw Cycle Time + (Downtime Duration per Event / Downtime Frequency)
         // If Every 100 pieces (Freq), we lose 5 mins (Duration).
         // Then average downtime per piece = 5mins / 100 = 300s / 100 = 3s/piece.
-        
+
         const downMin = parseInt(downtimeMinInput.value) || 0;
         const downSec = parseInt(downtimeSecInput.value) || 0;
         const downFreq = parseInt(downtimeFreqInput.value) || 0;
@@ -82,13 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const output11hr = Math.floor(SHIFT_11_SEC / effectiveCycleTime);
 
         // 4. Update UI
-        
+
         // Animate Numbers
         animateValue(res8hrOutput, 0, output8hr, 1000);
         animateValue(res11hrOutput, 0, output11hr, 1000);
-        
+
         resCycleTime.textContent = rawCycleTime.toFixed(2);
-        
+
         // Formatted MM:SS.ms
         const displayMin = Math.floor(rawCycleTime / 60);
         const displaySec = Math.floor(rawCycleTime % 60);
@@ -120,11 +121,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show Results Area
         resultsArea.classList.remove('hidden');
-        
+
         // Scroll to results on mobile
-        if(window.innerWidth < 600) {
+        if (window.innerWidth < 600) {
             resultsArea.scrollIntoView({ behavior: 'smooth' });
         }
+    }
+
+    function playClickSound() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+
+        const ctx = new AudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
+
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.1);
     }
 
     function animateValue(obj, start, end, duration) {
@@ -147,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         downtimeMinInput.value = '';
         downtimeSecInput.value = '';
         downtimeFreqInput.value = '';
-        
+
         resultsArea.classList.add('hidden');
         bar8hr.style.width = '0%';
         bar11hr.style.width = '0%';
