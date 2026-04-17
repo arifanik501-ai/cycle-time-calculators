@@ -2,368 +2,39 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycle Time Calculator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#eab308">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Fan Attendance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
 
 <body>
-    <!-- Live Analog Clock -->
-    <div class="live-clock" id="live-clock" role="img" aria-label="Live clock showing current time" tabindex="0"
-        aria-haspopup="true" aria-expanded="false">
-        <div class="clock-face">
-            <svg viewBox="0 0 64 64" class="clock-svg">
-                <!-- Markers Group -->
-                <g class="markers">
-                    <!-- Major Markers (Lines) -->
-                    <line x1="32" y1="4" x2="32" y2="10" class="marker major top" />
-                    <line x1="60" y1="32" x2="54" y2="32" class="marker major right" />
-                    <line x1="32" y1="60" x2="32" y2="54" class="marker major bottom" />
-                    <line x1="4" y1="32" x2="10" y2="32" class="marker major left" />
+  <div id="sidebar" class="sidebar"></div>
 
-                    <!-- Minor Markers (Dots) - Dynamically generated or hardcoded? Hardcoding for simplicity/perf -->
-                    <!-- 1 -->
-                    <circle cx="46" cy="7.7" r="1" class="marker minor" />
-                    <!-- 2 -->
-                    <circle cx="56.3" cy="18" r="1" class="marker minor" />
-                    <!-- 4 -->
-                    <circle cx="56.3" cy="46" r="1" class="marker minor" />
-                    <!-- 5 -->
-                    <circle cx="46" cy="56.3" r="1" class="marker minor" />
-                    <!-- 7 -->
-                    <circle cx="18" cy="56.3" r="1" class="marker minor" />
-                    <!-- 8 -->
-                    <circle cx="7.7" cy="46" r="1" class="marker minor" />
-                    <!-- 10 -->
-                    <circle cx="7.7" cy="18" r="1" class="marker minor" />
-                    <!-- 11 -->
-                    <circle cx="18" cy="7.7" r="1" class="marker minor" />
-                </g>
-
-                <!-- Hands -->
-                <line x1="32" y1="32" x2="32" y2="18" class="hand hour-hand" id="clock-hand-hour" />
-                <line x1="32" y1="32" x2="32" y2="12" class="hand minute-hand" id="clock-hand-minute" />
-                <g class="second-hand-group" id="clock-hand-second">
-                    <line x1="32" y1="36" x2="32" y2="10" class="hand second-hand" />
-                    <circle cx="32" cy="10" r="1" class="second-tip" /> <!-- Tip dot -->
-                </g>
-
-                <!-- Center Dot -->
-                <circle cx="32" cy="32" r="2" class="center-dot" />
-            </svg>
-        </div>
-
-        <!-- Digital Time (Below) -->
-        <div class="digital-clock-text" id="digital-clock-text">--:-- --</div>
-
-        <!-- Expanded Panel -->
-        <div class="expanded-panel hidden" id="clock-panel">
-            <div class="panel-row day-row">
-                <i class="fa-regular fa-calendar"></i> <span id="panel-day">--</span>
-            </div>
-            <div class="panel-row time-row" id="panel-time">--:--:-- --</div>
-            <div class="panel-row date-row" id="panel-date">--</div>
-            <div class="panel-divider"></div>
-            <div class="panel-row shift-row">
-                <i class="fa-solid fa-industry"></i> <span id="panel-shift">--</span>
-            </div>
-            <div class="panel-row remaining-row">
-                <i class="fa-solid fa-hourglass-half"></i> <span id="panel-remaining">--</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
-    <!-- Sticky Navigation Bar (Hidden by default) -->
-    <nav class="sticky-nav" id="sticky-nav">
-        <div class="nav-content">
-            <div class="mini-stopwatch" id="mini-stopwatch-trigger">
-                <div class="mini-circle">
-                    <svg class="mini-progress-ring" viewBox="0 0 56 56">
-                        <circle class="mini-track" cx="28" cy="28" r="26"></circle>
-                        <circle class="mini-stroke" cx="28" cy="28" r="26"></circle>
-                    </svg>
-                    <div class="mini-time" id="mini-time-display">00:00</div>
-                    <div class="mini-status-dot"></div>
-                </div>
-            </div>
-            <h1 class="nav-title"><i class="fa-solid fa-industry"></i> Cycle Time Calculator</h1>
-            <div class="mini-controls">
-                <button class="mini-btn" id="mini-btn-start" aria-label="Start"><i
-                        class="fa-solid fa-play"></i></button>
-                <button class="mini-btn" id="mini-btn-reset" aria-label="Reset"><i
-                        class="fa-solid fa-rotate-left"></i></button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <!-- Hero Stopwatch -->
-        <div class="hero-stopwatch-container">
-            <div class="stopwatch-circle">
-                <!-- Layer 1: Outer Ring -->
-                <div class="outer-ring"></div>
-
-                <!-- Layer 2: SVG Progress Ring -->
-                <svg class="progress-ring-svg" viewBox="0 0 296 296">
-                    <defs>
-                        <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#38b2ac" />
-                            <stop offset="50%" stop-color="#4299e1" />
-                            <stop offset="100%" stop-color="#9f7aea" />
-                        </linearGradient>
-                    </defs>
-                    <circle class="progress-ring-track" cx="148" cy="148" r="146"></circle>
-                    <circle class="progress-ring-stroke" cx="148" cy="148" r="146"></circle>
-                </svg>
-
-                <!-- Layer 3: Main Glass Surface -->
-                <div class="glass-surface"></div>
-
-                <!-- Layer 4: Inner Light Reflection -->
-                <div class="inner-light"></div>
-
-                <!-- Internal Elements -->
-                <div class="ticks-container" id="ticks-container">
-                    <!-- Ticks generated by JS -->
-                </div>
-
-                <div class="center-dot"></div>
-                <div class="second-hand" id="second-hand"></div>
-
-                <div class="stopwatch-content">
-                    <div class="lap-counter" id="lap-counter">STOPWATCH</div>
-
-                    <div class="digital-time">
-                        <span id="display-min">00</span><span class="colon">:</span><span
-                            id="display-sec">00</span><span class="dot">.</span><span id="display-ms">00</span>
-                    </div>
-
-                    <div class="secondary-time" id="secondary-time">00:00:00</div>
-
-                    <div class="controls">
-                        <button class="control-btn btn-lap" id="btn-lap" disabled aria-label="Record Lap">
-                            <i class="fa-solid fa-flag"></i>
-                        </button>
-                        <button class="control-btn btn-start" id="btn-start" aria-label="Start">
-                            <i class="fa-solid fa-play" id="icon-start"></i>
-                        </button>
-                        <button class="control-btn btn-reset" id="btn-reset" disabled aria-label="Reset">
-                            <i class="fa-solid fa-rotate-left"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <button class="use-time-btn hidden" id="btn-use-time">
-                <i class="fa-solid fa-download"></i> Use Measured Time
-            </button>
-        </div>
-
-        <header class="app-header">
-            <h1><i class="fa-solid fa-industry"></i> Cycle Time Calculator</h1>
-            <p>Production & Efficiency Forecaster</p>
-        </header>
-
-        <div class="glass-panel input-section">
-            <!-- Input Group 1: Production Data -->
-            <div class="input-group">
-                <div class="group-header">
-                    <i class="fa-solid fa-box-open"></i>
-                    <h2>Production Output</h2>
-                </div>
-                <div class="input-grid">
-                    <div class="input-field">
-                        <label for="pieces">Pieces Produced</label>
-                        <input type="number" id="pieces" placeholder="e.g., 25" min="1">
-                    </div>
-                    <div class="input-field time-group">
-                        <label>Time Taken (Min : Sec)</label>
-                        <div class="time-inputs-row">
-                            <input type="number" id="time-min" placeholder="00" min="0">
-                            <span class="time-separator">:</span>
-                            <input type="number" id="time-sec" placeholder="00" min="0" max="59">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Input Group 2: Downtime Data -->
-        <div class="glass-panel input-section" style="margin-top: 20px;">
-            <div class="input-group">
-                <div class="group-header">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <h2>Downtime / Losses</h2>
-                </div>
-                <p class="section-desc">Define downtime pattern (Duration per Frequency)</p>
-                <div class="input-grid">
-                    <div class="input-field time-group">
-                        <label>Event Duration (Min : Sec)</label>
-                        <div class="downtime-wrapper">
-                            <div class="time-inputs-row" id="downtime-inputs-row">
-                                <input type="number" id="downtime-min" placeholder="00" min="0">
-                                <span class="time-separator">:</span>
-                                <input type="number" id="downtime-sec" placeholder="00" min="0" max="59">
-                            </div>
-
-                            <!-- Downtime Mini Stopwatch -->
-                            <div class="downtime-stopwatch" id="dt-stopwatch" role="timer"
-                                aria-label="Downtime Stopwatch" aria-live="off">
-                                <i class="fa-solid fa-stopwatch dt-icon"></i>
-                                <span class="dt-time">00:00</span>
-                                <div class="dt-divider"></div>
-                                <button class="dt-btn dt-btn-toggle" aria-label="Start Downtime Timer">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                                <button class="dt-btn dt-btn-reset" disabled aria-label="Reset Timer">
-                                    <i class="fa-solid fa-rotate-right"></i>
-                                </button>
-                                <div class="dt-progress-bar"></div>
-
-                                <!-- Apply Button (Floating) -->
-                                <button class="dt-btn-apply hidden">APPLY &larr;</button>
-
-                                <!-- Tooltip -->
-                                <div class="dt-tooltip">Measure downtime & apply to inputs</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-field">
-                        <label for="downtime-freq">Occurs every ___ pieces</label>
-                        <input type="number" id="downtime-freq" placeholder="100" min="1">
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button id="calculate-btn" class="btn btn-primary">
-                    <i class="fa-solid fa-calculator"></i> Calculate Output
-                </button>
-                <button id="reset-btn" class="btn btn-secondary">
-                    <i class="fa-solid fa-rotate-right"></i> Reset
-                </button>
-            </div>
-        </div>
-
-        <!-- Output Section -->
-        <div class="output-section hidden" id="results-area">
-            <!-- Card 1: Cycle Time -->
-            <div class="output-card card-cycle">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-stopwatch"></i>
-                    </div>
-                    <h3>Cycle Time</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-cycle-time">--.--</span>
-                        <span class="unit-label">sec/pc</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info" id="res-cycle-formatted">-- s</div>
-                </div>
-            </div>
-
-            <!-- Card 2: 8-Hour Output -->
-            <div class="output-card card-8hr">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-industry"></i>
-                        <span class="icon-badge">8</span>
-                    </div>
-                    <h3>8-Hour Output</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-8hr-output">----</span>
-                        <span class="unit-label">pcs</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info">Target: <span id="target-8hr">--</span></div>
-                </div>
-            </div>
-
-            <!-- Card 3: 11-Hour Output -->
-            <div class="output-card card-11hr">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-industry"></i>
-                        <span class="icon-badge">11</span>
-                    </div>
-                    <h3>11-Hour Output</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-11hr-output">----</span>
-                        <span class="unit-label">pcs</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info">Target: <span id="target-11hr">--</span></div>
-                </div>
-            </div>
-
-            <!-- Card 4: Rate Per Minute -->
-            <div class="output-card card-rate">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-bolt"></i>
-                    </div>
-                    <h3>Production Rate</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-rate-min">--.--</span>
-                        <span class="unit-label">pcs/min</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info"><span id="res-rate-hr">--</span> pcs/hr</div>
-                </div>
-            </div>
-
-            <!-- Card 5: Efficiency -->
-            <div class="output-card card-efficiency">
-                <div class="card-glass-layer layer-1"></div>
-                <div class="card-glass-layer layer-2"></div>
-                <div class="card-status-dot"></div>
-                <div class="card-content">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-chart-simple"></i>
-                    </div>
-                    <h3>Efficiency</h3>
-                    <div class="hero-number-container">
-                        <span class="hero-number" id="res-efficiency">--.--</span>
-                        <span class="unit-label">%</span>
-                    </div>
-                    <div class="card-divider"></div>
-                    <div class="secondary-info">OEE Estimate</div>
-                </div>
-            </div>
+  <main class="main-content">
 
 
-        </div>
-        </main>
-    </div>
+    <div id="dashboard-container"></div>
+  </main>
 
-    <script src="script.js"></script>
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- Firebase Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+    });
+  </script>
 </body>
 
 </html>
